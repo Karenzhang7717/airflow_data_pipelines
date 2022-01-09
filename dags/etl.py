@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import os
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.subdag_operator import SubDagOperator
 from airflow.operators.postgres_operator import PostgresOperator
 from operators.stage_redshift import StageToRedshiftOperator
 from operators.load_fact import LoadFactOperator
@@ -71,5 +72,42 @@ load_songplays_table = LoadFactOperator(
     sql_stmt=SqlQueries.songplay_table_insert
 )
 
+load_user_dimension_table = LoadDimensionOperator(
+    task_id='Load_user_dim_table',
+    dag=dag,
+    table = "users",
+    truncate_data=True,
+    sql_stmt = SqlQueries.user_table_insert
+)
+
+load_song_dimension_table = LoadDimensionOperator(
+    task_id='Load_song_dim_table',
+    dag=dag,
+    table = "songs",
+    truncate_data=True,
+    sql_stmt = SqlQueries.song_table_insert
+)
+
+load_artist_dimension_table = LoadDimensionOperator(
+    task_id='Load_artist_dim_table',
+    dag=dag,
+    table = "artists",
+    truncate_data=True,
+    sql_stmt = SqlQueries.artist_table_insert
+)
+
+load_time_dimension_table = LoadDimensionOperator(
+    task_id='Load_time_dim_table',
+    dag=dag,
+    table = "time",
+    truncate_data=True,
+    sql_stmt = SqlQueries.time_table_insert
+)
+run_quality_checks = DataQualityOperator(
+    task_id='run_data_quality_checks',
+    tables=["users","artists","songs","time"],
+    dag=dag
+)
 
 create_tables  >> [stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
+load_songplays_table >> [load_user_dimension_table,load_song_dimension_table,load_artist_dimension_table,load_time_dimension_table] >> run_quality_checks
