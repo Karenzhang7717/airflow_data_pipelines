@@ -19,8 +19,8 @@ default_args = {
     'email': ['airflow@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    # 'retries': 1,
+    # 'retry_delay': timedelta(minutes=5),
     # 'sla': timedelta(hours=2),
 }
 
@@ -47,7 +47,7 @@ stage_events_to_redshift = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     table="staging_events",
     s3_bucket="udacity-dend",
-    s3_key="log_data/{execution_date.year}/{execution_date.month}/{ds}-events.json",
+    s3_key="log_data",
     copy_json_option="FORMAT AS json 's3://udacity-dend/log_json_path.json'"
 
 )
@@ -58,8 +58,8 @@ stage_songs_to_redshift = StageToRedshiftOperator(
     aws_credentials_id="aws_credentials",
     table="staging_songs",
     s3_bucket="udacity-dend",
-    s3_key="song_data",
-    copy_json_option= 'auto'
+    s3_key="song_data/A/A/A",
+    copy_json_option="json 'auto'"
 
 )
 

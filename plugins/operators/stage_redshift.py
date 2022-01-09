@@ -7,11 +7,11 @@ class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
     template_fields = ["s3_key","table"]
     copy_sql = """
-            COPY {0}
-            FROM '{1}'
-            ACCESS_KEY_ID '{2}'
-            SECRET_ACCESS_KEY '{3}'
-            {4}
+            COPY {}
+            FROM '{}'
+            ACCESS_KEY_ID '{}'
+            SECRET_ACCESS_KEY '{}'
+            {}
             ;
         """
 
@@ -31,8 +31,8 @@ class StageToRedshiftOperator(BaseOperator):
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
         self.aws_credentials_id = aws_credentials_id
-        self.copy_json_option = copy_json_option,
-        self.execution_date = kwargs.get('execution_date')
+        self.copy_json_option = copy_json_option
+
 
     def execute(self, context):
         aws_hook = AwsHook(self.aws_credentials_id,client_type="redshift")
@@ -52,6 +52,7 @@ class StageToRedshiftOperator(BaseOperator):
             credentials.secret_key,
             self.copy_json_option
         )
+        print(formatted_sql)
         self.log.info(f"QUERY: {formatted_sql}")
         redshift.run(formatted_sql)
         self.log.info(f"Success: Copying {self.table} from S3 to Redshift")
