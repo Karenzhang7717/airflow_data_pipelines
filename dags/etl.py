@@ -62,6 +62,14 @@ stage_songs_to_redshift = StageToRedshiftOperator(
     copy_json_option="json 'auto'"
 
 )
+load_songplays_table = LoadFactOperator(
+    task_id='Load_songplays_fact_table',
+    dag=dag,
+    redshift_conn_id="redshift",
+    table ="songplays",
+    truncate_data=False,
+    sql_stmt=SqlQueries.songplay_table_insert
+)
 
 
-create_tables  >> stage_events_to_redshift >> stage_songs_to_redshift
+create_tables  >> [stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
