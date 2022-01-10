@@ -3,6 +3,9 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
+    """
+    An operator to check data are ingested properly. Raises an error if one table returns no result.
+    """
 
     ui_color = '#89DA59'
 

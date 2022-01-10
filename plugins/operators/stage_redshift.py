@@ -4,6 +4,9 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class StageToRedshiftOperator(BaseOperator):
+    """
+    Load any JSON formatted files from S3 to Amazon Redshift.
+    """
     ui_color = '#358140'
     template_fields = ["s3_key","table"]
     copy_sql = """

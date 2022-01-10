@@ -3,6 +3,10 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadDimensionOperator(BaseOperator):
+    """
+    Load the dimension table to Redshift. Loads with the truncate-insert pattern where
+    the target table is emptied before the load.
+    """
 
     ui_color = '#80BD9E'
     truncate_sql = """

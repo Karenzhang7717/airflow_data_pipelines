@@ -3,6 +3,9 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadFactOperator(BaseOperator):
+    """
+    Load the fact table to Redshift. Truncate is set to be False for default as fact tables are usually massive, so that we should use append type.
+    """
     truncate_sql = """
         TRUNCATE TABLE {};
         """
