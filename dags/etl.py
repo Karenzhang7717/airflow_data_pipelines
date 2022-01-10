@@ -28,8 +28,7 @@ default_args = {
 dag = DAG('etl_dag',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
-          # schedule_interval='0 * * * *',
-          schedule_interval="@monthly",
+          schedule_interval='0 * * * *',
           catchup=False
           )
 
