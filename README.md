@@ -26,4 +26,4 @@ load_dimension.py - Operator to read from staging tables and load the dimension 
 data_quality.py - Operator for data quality checking
 
 ## DAG view
-![image](https://github.com/Karenzhang7717/airflow_data_pipelines/blob/dev/DAG%20View.png)
+![image](https://github.com/Karenzhang7717/airflow_data_pipelines/blob/main/DAG%20View.png)
