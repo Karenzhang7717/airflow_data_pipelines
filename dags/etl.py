@@ -20,9 +20,9 @@ default_args = {
     'email': ['airflow@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 1,
+    'retries': 3,
     'retry_delay': timedelta(minutes=5),
-    'sla': timedelta(hours=2),
+    # 'sla': timedelta(hours=2),
 }
 
 dag = DAG('etl_dag',
@@ -32,7 +32,7 @@ dag = DAG('etl_dag',
           catchup=False
           )
 
-# start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
+start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
 create_tables = PostgresOperator(
     task_id="Create_Tables",
@@ -104,9 +104,12 @@ load_time_dimension_table = LoadDimensionOperator(
 )
 run_quality_checks = DataQualityOperator(
     task_id='run_data_quality_checks',
-    tables=["users","artists","songs","time"],
     dag=dag
 )
 
+end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
+
+start_operator >> create_tables
 create_tables  >> [stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
 load_songplays_table >> [load_user_dimension_table,load_song_dimension_table,load_artist_dimension_table,load_time_dimension_table] >> run_quality_checks
+run_quality_checks >> end_operator
